@@ -2,6 +2,7 @@ from django.db import models
 from datetime import date
 
 # Create your models here.
+from django.urls import reverse
 
 
 class Category(models.Model):
@@ -60,7 +61,7 @@ class Movie(models.Model):
     title = models.CharField("Название", max_length=45, null=False)
     tagline = models.CharField("Слоган", max_length=45, default='')
     description = models.TextField("Описание", null=True)
-    poster = models.ImageField("Постер", upload_to="movies/", height_field=None, width_field=None, max_length=100)
+    poster = models.ImageField("Постер", upload_to="posters/", height_field=None, width_field=None, max_length=100)
     year = models.SmallIntegerField("Год", null=True, default=2010)
     country = models.CharField("Страна", max_length=45, null=True)
     director = models.ManyToManyField(Member, verbose_name="режиссер",
@@ -72,12 +73,14 @@ class Movie(models.Model):
     premier = models.DateField("Премьера в мире", max_length=45, null=True, default=date.today)
     budget = models.PositiveIntegerField("Бюджет", null=True, default=0,
                                          help_text="указывать сумму в долларах")
-    fees_USA = models.IntegerField("Сборы в США", max_length=15, null=True, default=0,
+    fees_USA = models.IntegerField("Сборы в США", null=True, default=0,
                                    help_text="указывать сумму в долларах")
-    feel_world = models.IntegerField("Сборы в мире", max_length=15, null=True, default=0,
+    feel_world = models.IntegerField("Сборы в мире", null=True, default=0,
                                      help_text="указывать сумму в долларах")
     url = models.SlugField(max_length=150, unique=True)
     draft = models.BooleanField("Черновик", default=False)
+
+    objects = models.Manager()
 
     def __str__(self):
         return self.title
@@ -85,6 +88,30 @@ class Movie(models.Model):
     class Meta:
         verbose_name = "Фильм"
         verbose_name_plural = "Фильмы"
+
+    def display_actor(self):
+        """
+        Список актеров
+        """
+        return ', '.join([actor.name for actor in self.actor.all()])
+    display_actor.short_description = 'actor'
+
+    def display_director(self):
+        """
+        Список режисеров
+        """
+        return ', '.join([director.name for director in self.director.all()])
+    display_director.short_description = 'director'
+
+    def display_genre(self):
+        """
+        Список жанров
+        """
+        return ', '.join([genre.name for genre in self.genre.all()])
+    display_genre.short_description = 'genre'
+
+    def get_absolute_url(self):
+        return reverse('movie_detail', kwargs={'slug': self.url})
 
 
 class MovieShots(models.Model):
@@ -129,7 +156,7 @@ class RatingStar(models.Model):
     value = models.SmallIntegerField("Значение", default=0)
 
     def __str__(self):
-        return self.value
+        return str(self.value)
 
     class Meta:
         verbose_name = "Звезда рейтинга"
