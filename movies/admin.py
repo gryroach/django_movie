@@ -5,7 +5,8 @@ from .models import Category, Movie, Member, MovieShots, Genre, Rating, RatingSt
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ('name', 'description', 'url')
+    list_display = ('id', 'name', 'description', 'url')
+    list_display_links = ('name',)
 
 
 @admin.register(Movie)

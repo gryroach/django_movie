@@ -89,6 +89,9 @@ class Movie(models.Model):
         verbose_name = "Фильм"
         verbose_name_plural = "Фильмы"
 
+    def get_review(self):
+        return self.review_set.filter(parent__isnull=True)
+
     def display_actor(self):
         """
         Список актеров
