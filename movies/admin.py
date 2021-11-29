@@ -59,6 +59,8 @@ class MovieAdmin(admin.ModelAdmin):
     # изменение поля в списке
     list_editable = ('draft',)
 
+    # actions =
+
     # Подключение формы редактора ckeditor
     form = MovieAdminForm
 
@@ -69,6 +71,33 @@ class MovieAdmin(admin.ModelAdmin):
         return mark_safe(f'<img src={obj.poster.url} width="100" height="150">')
 
     get_image.short_description = "Постер"
+
+    actions = ['publish', 'unpublish',]
+
+    # Определение методов дополнительных actions
+    def publish(self, request, queryset):
+        """ Опубликовать """
+        row_update = queryset.update(draft=False)
+        if row_update == 1:
+            message_bit = 'Одна запись была обновлена'
+        else:
+            message_bit = f'{row_update} записи были обновлены'
+        self.message_user(request, message_bit)
+
+    publish.short_description = 'Опубликовать'
+    publish.allowed_permissions = ('change',)
+
+    def unpublish(self, request, queryset):
+        """ Снять с публикации """
+        row_update = queryset.update(draft=True)
+        if row_update == 1:
+            message_bit = 'Одна запись была обновлена'
+        else:
+            message_bit = f'{row_update} записи были обновлены'
+        self.message_user(request, message_bit)
+
+    unpublish.short_description = 'Снять с публикации'
+    unpublish.allowed_permissions = ('change',)
 
 
 @admin.register(Member)
