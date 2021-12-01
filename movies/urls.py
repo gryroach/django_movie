@@ -15,3 +15,7 @@ urlpatterns += [
 urlpatterns += [
     path("review/<int:pk>/", views.AddReview.as_view(), name='add_review')
 ]
+
+urlpatterns += [
+    path("members/<str:slug>/", views.MemberDetail.as_view(), name='member_detail')
+]
