@@ -4,7 +4,11 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path("", views.MoviesView.as_view(), name='movie_view')
+    path("", views.MoviesView.as_view(), name='movie_view'),
+]
+
+urlpatterns += [
+    path("filter/", views.FilterMovieView.as_view(), name='filter')
 ]
 
 urlpatterns += [
@@ -19,3 +23,4 @@ urlpatterns += [
 urlpatterns += [
     path("members/<str:slug>/", views.MemberDetail.as_view(), name='member_detail')
 ]
+

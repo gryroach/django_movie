@@ -1,12 +1,30 @@
+from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.views.generic import View, ListView, DetailView
 
-from .models import Movie, Category, Member
+from .models import Movie, Category, Member, Genre
 
 from .forms import ReviewForm
 
 
-class MoviesView(ListView):
+class GenreYear:
+    """
+    Жанры и года
+    """
+    def get_genres(self):
+        return Genre.objects.all()
+
+    def get_years(self):
+
+        years = set()
+        years_list = Movie.objects.filter(draft=False).values("year")   # вернуть элементы с именем поля "year"
+        for year in years_list:
+            years.add(year['year'])
+        return sorted(years, reverse=True)
+        # return Movie.objects.filter(draft=False)
+
+
+class MoviesView(ListView, GenreYear):
     """
     Список фильмов
     """
@@ -20,7 +38,7 @@ class MoviesView(ListView):
     #     return context
 
 
-class MovieDetailView(DetailView):
+class MovieDetailView(DetailView, GenreYear):
     """
     Детальное описание фильма
     """
@@ -44,7 +62,20 @@ class AddReview(View):
         return redirect(movie.get_absolute_url())
 
 
-class MemberDetail(DetailView):
+class MemberDetail(DetailView, GenreYear):
     model = Member
     template_name = 'movies/member.html'
     slug_field = 'name'
+
+
+class FilterMovieView(GenreYear, ListView):
+    """
+    Фильтр фильмов по годам
+    """
+    def get_queryset(self):
+        # вернуть список, отфильтрованный запросом в форму фронта с переменной year
+        # метод Q необходим для срабатывания "ИЛИ"
+        queryset = Movie.objects.filter(Q(year__in=self.request.GET.getlist("year")) |
+                                        Q(genre__in=self.request.GET.getlist("genre"))
+                                        )
+        return queryset

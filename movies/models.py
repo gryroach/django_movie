@@ -51,6 +51,8 @@ class Genre(models.Model):
     description = models.TextField("Описание", null=True)
     url = models.SlugField(max_length=150, unique=True)
 
+    objects = models.Manager()
+
     def __str__(self):
         return self.name
 
