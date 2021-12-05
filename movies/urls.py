@@ -10,6 +10,10 @@ urlpatterns = [
 urlpatterns += [
     path("filter/", views.FilterMovieView.as_view(), name='filter')
 ]
+# фильтр без обновления страницы через json
+urlpatterns += [
+    path("json-filter/", views.JsonFilterMoviesView.as_view(), name='json_filter')
+]
 
 urlpatterns += [
     # url("^movie/(?P<pk>\d+)$", views.MovieDetailView.as_view(), name='movie_detail')
@@ -23,4 +27,6 @@ urlpatterns += [
 urlpatterns += [
     path("members/<str:slug>/", views.MemberDetail.as_view(), name='member_detail')
 ]
+
+
 
