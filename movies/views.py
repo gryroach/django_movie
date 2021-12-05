@@ -1,11 +1,11 @@
 from django.db.models import Q
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect
 from django.views.generic import View, ListView, DetailView
 
-from .models import Movie, Category, Member, Genre
+from .models import Movie, Category, Member, Genre, Rating, RatingStar
 
-from .forms import ReviewForm
+from .forms import ReviewForm, RatingForm
 
 
 class GenreYear:
@@ -46,6 +46,11 @@ class MovieDetailView(DetailView, GenreYear):
     model = Movie
     slug_field = 'url'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['star_form'] = RatingForm()
+        return context
+
 
 class AddReview(View):
     """
@@ -84,7 +89,9 @@ class FilterMovieView(GenreYear, ListView):
 
 # фильтр без обновления страницы через json
 class JsonFilterMoviesView(ListView):
-    """Фильтр фильмов в json"""
+    """
+    Фильтр фильмов в json
+    """
     def get_queryset(self):
         queryset = Movie.objects.filter(
             Q(year__in=self.request.GET.getlist("year")) |
@@ -95,3 +102,30 @@ class JsonFilterMoviesView(ListView):
     def get(self, request, *args, **kwargs):
         queryset = list(self.get_queryset())
         return JsonResponse({"movies": queryset}, safe=False)
+
+
+class AddStarRating(View):
+    """
+    Добавление рейтинга к фильму
+    """
+    def get_client_ip(self, request):
+        """ Получение IP-адреса пользователя """
+        x_forwarded_for = request.META.get("HTTP_FORWARDED_FOR")
+        if x_forwarded_for:
+            ip = x_forwarded_for.split(',')[0]
+        else:
+            ip = request.META.get("REMOTE_ADDR")
+        return ip
+
+    def post(self, request):
+        form = RatingForm(request.POST)
+        if form.is_valid():
+            # добавление записи или обновление, если существует
+            Rating.objects.update_or_create(
+                ip=self.get_client_ip(request),
+                movie_id=int(request.POST.get('movie')),
+                defaults={'star_id': int(request.POST.get('star'))}
+            )
+            return HttpResponse(status=201)
+        else:
+            return HttpResponse(status=400)

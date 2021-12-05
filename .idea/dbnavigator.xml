@@ -56,6 +56,9 @@
         <condition column="id" operator="=" value="" active="true" />
       </filter>
     </filter-actions>
+    <filter-actions connection-id="548f0cae-d5a8-404f-939e-a4a5cfa0eefc" dataset="main.movies_ratingstar" active-filter-id="f1bc0655-d335-4c3b-b500-5ecdbdd720f5">
+      <filter id="f1bc0655-d335-4c3b-b500-5ecdbdd720f5" name="Filter" temporary="false" custom-name="false" type="basic" join-type="AND" />
+    </filter-actions>
     <filter-actions connection-id="548f0cae-d5a8-404f-939e-a4a5cfa0eefc" dataset="main.auth_permission" active-filter-id="8e9a7f36-9e04-4f3c-99e5-78f9568a40f4">
       <filter id="8e9a7f36-9e04-4f3c-99e5-78f9568a40f4" name="Filter 1" temporary="false" custom-name="false" type="basic" join-type="AND" />
     </filter-actions>

@@ -28,5 +28,8 @@ urlpatterns += [
     path("members/<str:slug>/", views.MemberDetail.as_view(), name='member_detail')
 ]
 
+urlpatterns += [
+    path("add_rating/", views.AddStarRating.as_view(), name='add_rating')
+]
 
 
