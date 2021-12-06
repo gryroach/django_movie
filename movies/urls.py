@@ -32,4 +32,6 @@ urlpatterns += [
     path("add_rating/", views.AddStarRating.as_view(), name='add_rating')
 ]
 
-
+urlpatterns += [
+    path("search/", views.Search.as_view(), name='search')
+]
