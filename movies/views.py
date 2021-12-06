@@ -31,6 +31,7 @@ class MoviesView(ListView, GenreYear):
     """
     model = Movie
     queryset = Movie.objects.filter(draft=False)
+    paginate_by = 1
 
     # # добавление объектов категорий к списку фильмов
     # def get_context_data(self, *args, **kwargs):
@@ -78,13 +79,22 @@ class FilterMovieView(GenreYear, ListView):
     """
     Фильтр фильмов по годам
     """
+    paginate_by = 1
+
     def get_queryset(self):
         # вернуть список, отфильтрованный запросом в форму фронта с переменной year
         # метод Q необходим для срабатывания "ИЛИ"
         queryset = Movie.objects.filter(Q(year__in=self.request.GET.getlist("year")) |
                                         Q(genre__in=self.request.GET.getlist("genre"))
-                                        )
+                                        ).distinct()    # distinct - для удаления повторяющихся элементов
         return queryset
+
+    # настройка для пагинации при фильтации
+    def get_context_data(self, *args, **kwargs):
+        context = super(FilterMovieView, self).get_context_data(*args, **kwargs)
+        context['year'] = ''.join([f'year={x}&' for x in self.request.GET.getlist("year")])
+        context['genre'] = ''.join([f'genre={x}&' for x in self.request.GET.getlist("genre")])
+        return context
 
 
 # фильтр без обновления страницы через json
