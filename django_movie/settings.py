@@ -41,6 +41,9 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.flatpages',
 
+    # lesson 24
+    'contact',
+
     'ckeditor',
     'ckeditor_uploader',
     'movies',
