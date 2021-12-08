@@ -1,5 +1,5 @@
 {% extends 'movies/base.html' %}
-{% load static %}
+{% load static i18n %}
 {% block title %} {{ movie.title }} {% endblock title %}
 
 {% block container %}
@@ -21,41 +21,41 @@
                         {{ movie }}</h3>
                     <h5 class="editContent"></h5>
                     <ul>
-                        <li style="list-style: none"><span><b>Год:</b> {{ movie.year }}</span></li>
-                        <li style="list-style: none"><span><b>Страна:</b> {{ movie.country }}</span>
+                        <li style="list-style: none"><span><b>{% trans 'Год' %}:</b> {{ movie.year }}</span></li>
+                        <li style="list-style: none"><span><b>{% trans 'Страна' %}:</b> {{ movie.country }}</span>
                         </li>
-                        <li style="list-style: none"><span><b>Слоган:</b> {{ movie.tagline }}</span>
+                        <li style="list-style: none"><span><b>{% trans 'Слоган'%}:</b> {{ movie.tagline }}</span>
                         </li>
                         <li style="list-style: none">
-                    <span><b>Режиссер:</b>
+                    <span><b>{% trans 'Режиссер' %}:</b>
                         {% for director in movie.director.all %}
                             <a href="{{ director.get_absolute_url }}">
                                 {{ director.name }} </a>
                         {% endfor %}
                      </span></li>
-                        <li style="list-style: none"><span><b>Актеры:</b>
+                        <li style="list-style: none"><span><b>{% trans 'Актеры' %}:</b>
                     {% for actor in movie.actor.all %}
                     <a href="{{ actor.get_absolute_url }}">
                         {{ actor.name }} </a> |
                     {% endfor %}
                     </span></li>
-                        <li style="list-style: none"><span><b>Жанр:</b>
+                        <li style="list-style: none"><span><b>{% trans 'Жанр' %}:</b>
                     {% for genre in movie.genre.all %}
                         {{ genre.name }}
                     {% endfor %}
                     </span>
                         </li>
-                        <li style="list-style: none"><span><b>Премьера в мире:</b> {{ movie.premier }}</span>
+                        <li style="list-style: none"><span><b>{% trans 'Премьера в мире' %}:</b> {{ movie.premier }}</span>
                         </li>
                         <li style="list-style: none">
-                            <span><b>Бюджет:</b> {{ movie.budget }}</span></li>
+                            <span><b>{% trans 'Бюджет' %}:</b> {{ movie.budget }}</span></li>
                         <li style="list-style: none">
-                            <span><b>Сборы в США:</b> ${{ movie.fees_USA }}</span></li>
-                        <li style="list-style: none"><span><b>Сборы в мире:</b> ${{ movie.fees_world }}</span>
+                            <span><b>{% trans 'Сборы в США' %}:</b> ${{ movie.fees_USA }}</span></li>
+                        <li style="list-style: none"><span><b>{% trans 'Сборы в мире' %}:</b> ${{ movie.fees_world }}</span>
                         </li>
                         <li>
                             <form action="{% url 'add_rating' %}" method="post" name="rating">
-                                <b>Рейтинг:</b>
+                                <b>{% trans 'Рейтинг' %}:</b>
                                 {% csrf_token %}
                                 <input type="hidden" value="{{ movie.id }}" name="movie">
                                 <span class="rating">
