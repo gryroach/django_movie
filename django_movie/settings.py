@@ -13,6 +13,7 @@ import os.path
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
@@ -25,7 +26,7 @@ SECRET_KEY = 'django-insecure-ic#14)8yxi2-mc1uahi&z6r&4#^p*o1n7w-(8m$fyzej-(2na(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['.localhost', '127.0.0.1', '[::1]']
 
 
 # Application definition
@@ -50,6 +51,11 @@ INSTALLED_APPS = [
     'movies',
 
     'snowpenguin.django.recaptcha3',
+
+    # настройка авторизации
+    'allauth',
+    'allauth.account',
+
 ]
 
 MIDDLEWARE = [
@@ -96,6 +102,11 @@ DATABASES = {
     }
 }
 
+# настройка авторизации
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -128,6 +139,18 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
+# перенаправлиние при входе в аккаунт
+LOGIN_REDIRECT_URL = '/'
+
+# отправка электронной почты в консоль и подтверждение писем
+EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
+
+# количество дней до подтверждения письма
+ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 1
+
+# минимальная длина логина пользователя
+ACCOUNT_USERNAME_MIN_LENGTH = 4
 
 # добавление языков для перевода
 gettext = lambda s: s
